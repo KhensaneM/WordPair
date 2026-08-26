@@ -81,19 +81,41 @@ class _MyHomePageState extends State<MyHomePage> {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-            Text(
-              currentWordPair,
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+
+            BigCard(wordPair: currentWordPair),
+
             const SizedBox(height: 30),
+
             ElevatedButton(
               onPressed: generateWordPair,
               child: const Text('Generate'),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.wordPair,
+  });
+
+  final String wordPair;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Text(
+          wordPair,
+          style: const TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
