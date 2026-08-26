@@ -32,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool isFavorite = false;
   final List<String> adjectives = [
     'Happy',
     'Brave',
@@ -65,6 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
       currentWordPair = '$adjective $noun';
     });
   }
+  void toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
 
             BigCard(wordPair: currentWordPair),
+
+            IconButton(
+              onPressed: toggleFavorite,
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+              ),
+            ),
 
             const SizedBox(height: 30),
 
