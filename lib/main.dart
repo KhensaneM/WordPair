@@ -61,6 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<String> favorites = [];
 
+  int selectedIndex = 0;
+
   void generateWordPair() {
     final random = Random();
 
@@ -94,61 +96,74 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const Text(
-              'Your word pair is:',
-              style: TextStyle(fontSize: 18),
-            ),
-
-            const SizedBox(height: 20),
-
-            BigCard(wordPair: currentWordPair),
-
-            IconButton(
-              onPressed: toggleFavorite,
-              icon: Icon(
-                isFavorite
-                    ? Icons.favorite
-                    : Icons.favorite_border,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              'Favorites',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            favorites.isEmpty
-                ? const Text(
-                    'No favorites yet.',
-                  )
-                : Column(
-                    children: favorites.map((favorite) {
-                      return ListTile(
-                        leading: const Icon(Icons.favorite),
-                        title: Text(favorite),
-                      );
-                    }).toList(),
+      body: selectedIndex == 0
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  const Text(
+                    'Your word pair is:',
+                    style: TextStyle(fontSize: 18),
                   ),
 
-            const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: generateWordPair,
-              child: const Text('Generate'),
-            ),
-          ],
-        ),
+                  BigCard(wordPair: currentWordPair),
+
+                  IconButton(
+                    onPressed: toggleFavorite,
+                    icon: Icon(
+                      isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  ElevatedButton(
+                    onPressed: generateWordPair,
+                    child: const Text('Generate'),
+                  ),
+                ],
+              ),
+            )
+          : favorites.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No favorites yet.',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: favorites.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: const Icon(Icons.favorite),
+                      title: Text(favorites[index]),
+                    );
+                  },
+                ),
+
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.favorite_border),
+            selectedIcon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+        ],
       ),
     );
   }
