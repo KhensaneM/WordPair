@@ -33,6 +33,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool isFavorite = false;
+  final List<String> favorites = [];
+
   final List<String> adjectives = [
     'Happy',
     'Brave',
@@ -64,12 +66,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       currentWordPair = '$adjective $noun';
+      isFavorite = favorites.contains(currentWordPair);
     });
   }
   void toggleFavorite() {
-    setState(() {
-      isFavorite = !isFavorite;
-    });
+  setState(() {
+    if (isFavorite) {
+      favorites.remove(currentWordPair);
+      isFavorite = false;
+    } else {
+      favorites.add(currentWordPair);
+      isFavorite = true;
+    }
+  });
+
   }
 
   @override
