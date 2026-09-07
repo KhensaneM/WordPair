@@ -12,21 +12,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Namer App',
+      debugShowCheckedModeBanner: false,
+      title: 'Word Pair Generator',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
         ),
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Namer App'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -114,138 +114,214 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        centerTitle: true,
+        title: const Text(
+          'Word Pair Generator',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
 
       body: selectedIndex == 0
-          ? SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  const SizedBox(height: 30),
-
-                  const Text(
-                    'Your word pair is:',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  BigCard(
-                    wordPair: currentWordPair,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  IconButton(
-                    onPressed: toggleFavorite,
-                    icon: Icon(
-                      isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                    ),
-                    iconSize: 40,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  ElevatedButton(
-                    onPressed: generateWordPair,
-                    child: const Text('Generate'),
-                  ),
-                ],
-              ),
-            )
-          : favorites.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No favorites yet.',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: favorites.length,
-                  itemBuilder: (context, index) {
-                    final favorite = favorites[index];
-
-                    return Dismissible(
-                      key: ValueKey(favorite),
-
-                      direction: DismissDirection.horizontal,
-
-                      onDismissed: (direction) {
-                        removeFavorite(index);
-                      },
-
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(
-                          left: 20,
-                        ),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      secondaryBackground: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(
-                          right: 20,
-                        ),
-                        child: const Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.favorite,
-                        ),
-                        title: Text(favorite),
-                      ),
-                    );
-                  },
-                ),
+          ? _buildHomePage()
+          : _buildFavoritesPage(),
 
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
-
         onDestinationSelected: (index) {
           setState(() {
             selectedIndex = index;
           });
         },
-
         destinations: const [
           NavigationDestination(
-            icon: Icon(
-              Icons.home_outlined,
-            ),
-            selectedIcon: Icon(
-              Icons.home,
-            ),
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
             label: 'Home',
           ),
-
           NavigationDestination(
-            icon: Icon(
-              Icons.favorite_border,
-            ),
-            selectedIcon: Icon(
-              Icons.favorite,
-            ),
+            icon: Icon(Icons.favorite_border),
+            selectedIcon: Icon(Icons.favorite),
             label: 'Favorites',
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHomePage() {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.auto_awesome,
+              size: 60,
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              'Discover a new word pair',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 10),
+
+            const Text(
+              'Generate creative word combinations and save your favourites.',
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 30),
+
+            BigCard(
+              wordPair: currentWordPair,
+            ),
+
+            const SizedBox(height: 20),
+
+            IconButton(
+              onPressed: toggleFavorite,
+              tooltip: isFavorite
+                  ? 'Remove from favorites'
+                  : 'Add to favorites',
+              iconSize: 42,
+              icon: Icon(
+                isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border,
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            ElevatedButton.icon(
+              onPressed: generateWordPair,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Generate'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFavoritesPage() {
+    if (favorites.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.favorite_border,
+              size: 60,
+            ),
+            SizedBox(height: 16),
+            Text(
+              'No favorites yet',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Favourite a word pair and it will appear here.',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            '${favorites.length} favorite${favorites.length == 1 ? '' : 's'}',
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+
+        Expanded(
+          child: ListView.builder(
+            itemCount: favorites.length,
+            itemBuilder: (context, index) {
+              final favorite = favorites[index];
+
+              return Dismissible(
+                key: ValueKey(favorite),
+                direction: DismissDirection.horizontal,
+
+                onDismissed: (direction) {
+                  removeFavorite(index);
+                },
+
+                background: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                  ),
+                  alignment: Alignment.centerLeft,
+                  child: const Icon(
+                    Icons.delete,
+                  ),
+                ),
+
+                secondaryBackground: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  padding: const EdgeInsets.only(
+                    right: 20,
+                  ),
+                  alignment: Alignment.centerRight,
+                  child: const Icon(
+                    Icons.delete,
+                  ),
+                ),
+
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.favorite,
+                    ),
+                    title: Text(
+                      favorite,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      'Swipe to remove',
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -261,14 +337,21 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 4,
+      elevation: 6,
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 32,
+          vertical: 28,
+        ),
         child: Text(
           wordPair,
           style: Theme.of(context)
               .textTheme
-              .headlineMedium,
+              .headlineMedium
+              ?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

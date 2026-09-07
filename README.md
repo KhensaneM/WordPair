@@ -1,17 +1,39 @@
-# mobile_track1
+# Word Pair Generator
 
-A new Flutter project.
+A Flutter application built as part of the Mobile Development Track 1.
 
-## Getting Started
+The application generates random word pairs and allows users to save their
+favourite word pairs. Users can navigate between the Home and Favorites
+screens and remove saved favourites by swiping them away.
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- Generate random word pairs
+- Display the current word pair in a reusable card
+- Add and remove word pairs from Favorites
+- View all saved Favorites
+- Swipe to remove a Favorite
+- Navigate between Home and Favorites
+- Display the number of saved Favorites
+- Responsive Flutter user interface
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Technologies Used
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter
+- Dart
+- Material Design
+- Git
+- GitHub
+
+## Requirements
+
+Before running the project, make sure you have:
+
+- Flutter SDK installed
+- Dart SDK
+- Google Chrome or another supported Flutter device
+
+Check your Flutter installation with:
+
+```bash
+flutter doctor
